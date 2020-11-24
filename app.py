@@ -2,6 +2,7 @@ import telegram
 from flask import Flask, request
 from flask_pymongo import PyMongo
 import logging
+import os
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -10,9 +11,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
-app.config.from_pyfile('config/default.py')
 
-bot = telegram.Bot(token=app.config['TELEGRAM_TOKEN'])
+bot = telegram.Bot(token=os.environ.get('TELEGRAM_TOKEN'))
 mongo = PyMongo(app)
 collection = mongo.db.questions
 
@@ -48,7 +48,7 @@ def new_query():
 
 @app.route('/set_webhook', methods=['GET', 'POST'])
 def set_webhook():
-    s = bot.setWebhook(app.config['WEBHOOK_URL'])
+    s = bot.setWebhook(os.environ.get('WEBHOOK_URL'))
     if s:
         logger.info("Webhook set up success")
     else:
