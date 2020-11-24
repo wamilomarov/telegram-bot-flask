@@ -44,8 +44,44 @@ def hello_world():
 def new_query():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     user = update.message.from_user
-    logger.info(user.full_name + " has a message")
-    update.message.reply_text(user.first_name + " vızqırt.")
+
+    if update.message.text == "/start":
+        update.message.reply_text("Welcome " + user.first_name + "! I am here to help you find out answers for your "
+                                                                 "questions from StackOverflow. Please, type in "
+                                                                 "your question...")
+        logger.info(user.full_name + " has started a conversation")
+        return "Done"
+
+    cursor = collection.aggregate([
+        {
+            "$search": {
+                "index": "textSearch",
+                "text": {
+                    "query": update.message.text,
+                    "path": ["Body", "Title"],
+                }
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "Id": 1,
+                "Title": 1,
+                "Body": 0,
+                "score": {"$meta": "searchScore"}
+            }
+        },
+        {
+            "$limit": 4
+        }
+    ])
+    results = list(cursor)
+    if len(results) > 0:
+        update.message.reply_text("Sorry :( No similar question was found.")
+    else:
+        update.message.reply_text("Look what I found! These are 4 most similar questions to yours: ")
+        for operation in results:
+            update.message.reply_text("https://stackoverflow.com/questions/" + operation["Id"])
     return "Done"
 
 
