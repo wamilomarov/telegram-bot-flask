@@ -45,8 +45,8 @@ def new_query():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     user = update.message.from_user
     logger.info(user.full_name + " has a message")
-    update.message.reply_text(user.first_name + "vızqırt.")
-    return True
+    update.message.reply_text(user.first_name + " vızqırt.")
+    return "Done"
 
 
 @app.route('/set_webhook', methods=['GET', 'POST'])
@@ -56,6 +56,8 @@ def set_webhook():
         logger.info("Webhook set up success")
     else:
         logger.error("Webhook set up failure")
+
+    return "Done"
 
 
 if __name__ == '__main__':
