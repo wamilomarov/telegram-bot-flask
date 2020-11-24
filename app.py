@@ -67,7 +67,7 @@ def new_query():
                 "_id": 0,
                 "Id": 1,
                 "Title": 1,
-                "Body": 0,
+                "Body": 1,
                 "score": {"$meta": "searchScore"}
             }
         },
