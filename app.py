@@ -76,7 +76,7 @@ def new_query():
         }
     ])
     results = list(cursor)
-    if len(results) > 0:
+    if len(results) == 0:
         update.message.reply_text("Sorry :( No similar question was found.")
     else:
         update.message.reply_text("Look what I found! These are 4 most similar questions to yours: ")
