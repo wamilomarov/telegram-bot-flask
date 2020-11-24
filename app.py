@@ -12,9 +12,12 @@ logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
 
+app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+
 bot = telegram.Bot(token=os.environ.get('TELEGRAM_TOKEN'))
 mongo = PyMongo(app)
 collection = mongo.db.questions
+
 
 @app.route('/')
 def hello_world():
