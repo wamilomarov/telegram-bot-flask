@@ -1,4 +1,5 @@
 import telegram
+import requests
 from flask import Flask, request
 from flask_pymongo import PyMongo
 import logging
@@ -52,7 +53,11 @@ def new_query():
         logger.info(user.full_name + " has started a conversation")
         return "Done"
 
-    update.message.reply_text("Just a moment... I am trying to find out smth for you...")
+    gif = get_gif("searching")
+    if gif is not None:
+        update.message.reply_animation(gif, caption="Just a moment... I am trying to find out smth for you...")
+    else:
+        update.message.reply_text("Just a moment... I am trying to find out smth for you...")
 
     cursor = collection.aggregate([
         {
@@ -96,6 +101,23 @@ def set_webhook():
         logger.error("Webhook set up failure")
 
     return "Done"
+
+
+def get_gif(key):
+    token = os.environ.get('GIPHY_TOKEN')
+    url = "https://api.giphy.com/v1/gifs/random?api_key=" + \
+          token + \
+          "&tag=" + \
+          key + "&rating=g"
+
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return None
+
+    data = response.json()
+    return data['data']['image_original_url']
+
 
 
 if __name__ == '__main__':
