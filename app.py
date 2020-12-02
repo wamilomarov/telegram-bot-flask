@@ -74,7 +74,7 @@ def new_query():
             }
         },
         {
-            "$limit": 5
+            "$limit": os.environ.get('SEARCH_LIMIT')
         }
     ])
     results = list(cursor)
