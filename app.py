@@ -52,6 +52,8 @@ def new_query():
         logger.info(user.full_name + " has started a conversation")
         return "Done"
 
+    update.message.reply_text("Just a moment... I am trying to find out smth for you...")
+
     cursor = collection.aggregate([
         {
             "$search": {
@@ -72,14 +74,14 @@ def new_query():
             }
         },
         {
-            "$limit": 4
+            "$limit": 5
         }
     ])
     results = list(cursor)
     if len(results) == 0:
         update.message.reply_text("Sorry :( No similar question was found.")
     else:
-        update.message.reply_text("Look what I found! These are 4 most similar questions to yours: ")
+        update.message.reply_text("Look what I found! These are " + str(len(results)) + " most similar questions to yours: ")
         for operation in results:
             update.message.reply_text("https://stackoverflow.com/questions/" + operation["Id"])
     return "Done"
