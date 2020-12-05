@@ -118,7 +118,7 @@ def process_user_query(query):
 
 
 def search(query):
-    processing_type = os.environ.get('PROCESSING_TYPE')
+    processing_type = os.environ.get('SEARCH_TYPE')
 
     if processing_type == "NEIGHBOR_FINDER":
         finder = NeighborFinder()
