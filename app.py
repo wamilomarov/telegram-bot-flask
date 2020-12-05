@@ -45,7 +45,9 @@ def hello_world():
 
 @app.route('/new_query', methods=['POST'])
 def new_query():
+    print(request.get_json(force=True))
     update = telegram.Update.de_json(request.get_json(force=True), bot)
+    print("UPDATE: " + update)
 
     if update.message.text == "/start":
         user = update.message.from_user
