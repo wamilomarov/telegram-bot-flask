@@ -47,7 +47,7 @@ def hello_world():
 def new_query():
     print(request.get_json(force=True))
     update = telegram.Update.de_json(request.get_json(force=True), bot)
-    print("UPDATE: " + update)
+    print("UPDATE: " + update.to_json())
 
     if update.message.text == "/start":
         user = update.message.from_user
