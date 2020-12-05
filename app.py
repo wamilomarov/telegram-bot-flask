@@ -55,11 +55,12 @@ def new_query():
         logger.info(user.full_name + " has started a conversation")
         return "Done"
 
-    gif = get_gif("searching")
-    if gif is not None:
-        update.message.reply_animation(gif, caption="Just a moment... I am trying to find out smth for you...")
-    else:
-        update.message.reply_text("Just a moment... I am trying to find out smth for you...")
+    if os.environ.get('SEND_GIF'):
+        gif = get_gif("searching")
+        if gif is not None:
+            update.message.reply_animation(gif, caption="Just a moment... I am trying to find out smth for you...")
+        else:
+            update.message.reply_text("Just a moment... I am trying to find out smth for you...")
 
     user_query = process_user_query(update.message.text)
 
@@ -157,4 +158,3 @@ def search(query):
 
 if __name__ == '__main__':
     app.run(threaded=True, port=5000)
-
