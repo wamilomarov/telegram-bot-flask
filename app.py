@@ -46,9 +46,9 @@ def hello_world():
 @app.route('/new_query', methods=['POST'])
 def new_query():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
-    user = update.message.from_user
 
     if update.message.text == "/start":
+        user = update.message.from_user
         update.message.reply_text("Welcome " + user.first_name + "! I am here to help you find out answers for your "
                                                                  "questions from StackOverflow. Please, type in "
                                                                  "your question...")
