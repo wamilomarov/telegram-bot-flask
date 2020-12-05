@@ -49,36 +49,40 @@ def new_query():
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     print("UPDATE: " + update.to_json())
 
-    if update.message.text == "/start":
-        user = update.message.from_user
-        update.message.reply_text("Welcome " + user.first_name + "! I am here to help you find out answers for your "
-                                                                 "questions from StackOverflow. Please, type in "
-                                                                 "your question...")
+    message = update.message
+    if message is None:
+        message = update.edited_message
+
+    if message.text == "/start":
+        user = message.from_user
+        message.reply_text("Welcome " + user.first_name + "! I am here to help you find out answers for your "
+                                                          "questions from StackOverflow. Please, type in "
+                                                          "your question...")
         logger.info(user.full_name + " has started a conversation")
         return "Done"
 
     if os.environ.get('SEND_GIF') == '1':
         gif = get_gif("searching")
         if gif is not None:
-            update.message.reply_animation(gif, caption="Just a moment... I am trying to find out smth for you...")
+            message.reply_animation(gif, caption="Just a moment... I am trying to find out smth for you...")
         else:
-            update.message.reply_text("Just a moment... I am trying to find out smth for you...")
+            message.reply_text("Just a moment... I am trying to find out smth for you...")
 
-    user_query = process_user_query(update.message.text)
+    user_query = process_user_query(message.text)
 
     # if some empty message or only stop words are sent
     if not user_query or user_query.isspace():
-        update.message.reply_text("Hello there! Ask me you question to find an answer :)")
+        message.reply_text("Hello there! Ask me you question to find an answer :)")
 
     results = search(user_query)
 
     if len(results) == 0:
-        update.message.reply_text("Sorry :( No similar question was found.")
+        message.reply_text("Sorry :( No similar question was found.")
     else:
-        update.message.reply_text(
+        message.reply_text(
             "Look what I found! These are " + str(len(results)) + " most similar questions to yours: ")
         for operation in results:
-            update.message.reply_text("https://stackoverflow.com/questions/" + operation["Id"])
+            message.reply_text("https://stackoverflow.com/questions/" + operation["Id"])
     return "Done"
 
 
