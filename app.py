@@ -55,7 +55,7 @@ def new_query():
         logger.info(user.full_name + " has started a conversation")
         return "Done"
 
-    if os.environ.get('SEND_GIF'):
+    if os.environ.get('SEND_GIF') == '1':
         gif = get_gif("searching")
         if gif is not None:
             update.message.reply_animation(gif, caption="Just a moment... I am trying to find out smth for you...")
